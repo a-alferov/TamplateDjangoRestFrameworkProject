@@ -40,7 +40,7 @@ class TaggedObjectSerializer(serializers.Serializer):
 class TagView(viewsets.ModelViewSet):
     class TaggedSerializer(FlexFieldsSerializerMixin, serializers.HyperlinkedModelSerializer):
         content_type = TaggedObjectTypeField(TaggedObjectType.choices)
-        tagged_object = serializers.PrimaryKeyRelatedField(read_only=True)
+        tagged_object = serializers.IntegerField(source='object_id')
         url = serializers.HyperlinkedIdentityField(view_name='tag-detail')
 
         class Meta:
@@ -60,7 +60,6 @@ class TagView(viewsets.ModelViewSet):
 
     queryset = TaggedItem.objects.all()
     serializer_class = TaggedSerializer
-    # filterset_fields = '__all__'
     filterset_class = TagFilterSet
     ordering_fields = '__all__'
 
