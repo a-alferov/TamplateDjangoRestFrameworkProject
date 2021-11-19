@@ -3,7 +3,7 @@ from rest_framework import serializers
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.schemas import openapi
+from rest_framework.schemas.openapi import AutoSchema
 from rest_framework.viewsets import ModelViewSet
 
 from api.models import Article, Reporter
@@ -15,6 +15,9 @@ class ReporterView(ModelViewSet):
         class Meta:
             model = Reporter
             fields = ('id', 'first_name', 'last_name', 'email', 'url')
+            extra_kwargs = {
+                'url': {'view_name': 'v1-reporter-detail'}
+            }
 
     class CreateArticleSerializer(serializers.HyperlinkedModelSerializer):
         class Meta:
@@ -26,15 +29,21 @@ class ReporterView(ModelViewSet):
     serializer_class = ReporterSerializer
     filterset_fields = '__all__'
     ordering_fields = '__all__'
-
-    create_article_schema = openapi.AutoSchema(
-        component_name='Article',
+    schema = AutoSchema(
+        tags=['V1-Reporter'],
+        component_name='V1-Reporter',
+        operation_id_base='V1-Reporter'
     )
 
     @action(
         detail=True,
         methods=['post'],
         serializer_class=CreateArticleSerializer,
+        schema=AutoSchema(
+            tags=['V1-CreateArticle'],
+            component_name='V1-CreateArticle',
+            operation_id_base='V1-CreateArticle',
+        )
     )
     def create_article(self, request, pk):
         reporter = self.get_object()
@@ -52,6 +61,10 @@ class ArticleView(ModelViewSet):
         class Meta:
             model = Article
             fields = ('id', 'headline', 'pub_date', 'reporter', 'url')
+            extra_kwargs = {
+                'reporter': {'view_name': 'v1-reporter-detail'},
+                'url': {'view_name': 'v1-article-detail'}
+            }
             expandable_fields = {
                 'reporter': ReporterView.ReporterSerializer
             }
@@ -60,3 +73,8 @@ class ArticleView(ModelViewSet):
     serializer_class = ArticleSerializer
     filterset_fields = '__all__'
     ordering_fields = '__all__'
+    schema = AutoSchema(
+        tags=['V1-Article'],
+        component_name='V1-Article',
+        operation_id_base='V1-Article',
+    )

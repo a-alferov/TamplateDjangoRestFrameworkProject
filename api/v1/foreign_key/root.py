@@ -1,10 +1,9 @@
 from rest_framework import permissions, routers
 
 
-class ManyToManyRoot(routers.APIRootView):
+class ForeignKey(routers.APIRootView):
     permission_classes = (permissions.AllowAny,)
-
     api_root_dict = {
-        'pizza': 'pizza-list',
-        'topping': 'topping-list',
+        'reporter': 'v1-reporter-list',
+        'article': 'v1-article-list',
     }

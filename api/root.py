@@ -1,10 +1,12 @@
 from rest_framework import permissions, routers
 
 
-class APIRoot(routers.APIRootView):
+class API(routers.APIRootView):
     permission_classes = (permissions.AllowAny,)
     api_root_dict = {
-        'generic-key': 'generic-key',
-        'many-to-many': 'many-to-many',
-        'foreign-key': 'foreign-key',
+        'v1': 'v1',
+        'v2': 'v2',
+        'v3': 'v3',
+        'v4': 'v4',
+        'schema': 'schema',
     }
